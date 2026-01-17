@@ -1,0 +1,38 @@
+<configuration scan="true" scanPeriod="5 seconds">
+    <property name="LOG_DIR" value="var/log/application" />
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_DIR}/logfile.log</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>message.contains("PII")</expression>
+<!--                <expression>formattedMessage.contains("PII")</expression>-->
+            </evaluator>
+            <OnMismatch>NETURAL</OnMismatch>
+            <OnMatch>DENY</OnMatch>
+        </filter>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%boldRed(%d{HH:mm:ss.SSS}) %green([%thread]) %highlight(%-5level) %cyan(%logger{36}) - %msg%n</pattern>
+        </encoder>
+
+    </appender>
+
+    <logger name="code.tofu.useLogback.service.debugLogger" level="DEBUG" />
+    <logger name="code.tofu.useLogback.service.warnLogger" level="WARN" />
+    <logger name="code.tofu.useLogback.service.fileLogger" level="INFO">
+        <appender-ref ref="FILE" />
+    </logger>
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+<!--        <appender-ref ref="FILE" />-->
+    </root>
+</configuration>
+
+
